@@ -1,0 +1,22 @@
+{
+    "name": "story-compiler",
+    "version": "1.0.0",
+    "description": "Créer un cahier des charges légers, à partir de Stories, pour vos projets web.",
+    "type": "module",
+    "author": "Bergall",
+    "license": "MIT",
+    "bin": {
+        "story-compile": "./bin/story-compile.js",
+        "story-todo": "./bin/story-todo.js"
+    },
+    "dependencies": {
+        "chalk": "^5.3.0",
+        "glob": "^10.3.10",
+        "md-to-pdf": "^5.2.4"
+    },
+    "bundledDependencies": [
+        "chalk",
+        "glob",
+        "md-to-pdf"
+    ]
+}
