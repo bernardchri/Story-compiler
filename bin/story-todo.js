@@ -78,6 +78,7 @@ for (const file of stories) {
 
   results.push({
     name: h1Title,
+    filePath: file,
     done,
     total,
     percent,
@@ -91,7 +92,7 @@ results.sort((a, b) => b.percent - a.percent);
 console.log(chalk.bold("\n📋 Progression des stories\n"));
 if (version) console.log(chalk.gray(`Filtrage version : ${version}\n`));
 
-for (const { name, done, total, percent } of results) {
+for (const { name, filePath, done, total, percent } of results) {
   const barLength = 20;
   const filled = Math.round((percent / 100) * barLength);
   const bar =
@@ -105,11 +106,16 @@ for (const { name, done, total, percent } of results) {
       ? chalk.yellow
       : chalk.red;
 
+  const absolutePath = path.resolve(filePath);
+  const fileUrl = `file://${absolutePath}`;
+  const link = `\x1b]8;;${fileUrl}\x07${chalk.gray(filePath)}\x1b]8;;\x07`;
+
   console.log(
     `${chalk.bold(name.padEnd(30))} ${bar} ${color(
       `${Math.round(percent)}%`
-    )}  (${done}/${total}) \n`
+    )}  (${done}/${total})`
   );
+  console.log(`  ${link}\n`);
 }
 
 // 7. Résumé global
