@@ -64,11 +64,11 @@ for (const file of stories) {
   // Regex pour todo/done
   let doneRegex, todoRegex;
   if (version) {
-    doneRegex = new RegExp(`-\\s*\$begin:math:display$[xX]\\$end:math:display$\\s*${version}:`, "g");
-    todoRegex = new RegExp(`-\\s*\$begin:math:display$ \\$end:math:display$\\s*${version}:`, "g");
+    doneRegex = new RegExp(`-\\s*\\[[xX]\\]\\s*${version}\\s*:`, "g");
+    todoRegex = new RegExp(`-\\s*\\[ \\]\\s*${version}\\s*:`, "g");
   } else {
-    doneRegex = /- \[[xX]\](?!\s*\w+:)/g;
-    todoRegex = /- \[ \](?!\s*\w+:)/g;
+    doneRegex = /- \[[xX]\](?!\s*\w+\s*:)/g;
+    todoRegex = /- \[ \](?!\s*\w+\s*:)/g;
   }
 
   const done = (content.match(doneRegex) || []).length;
