@@ -76,9 +76,11 @@ for (const file of stories) {
   const total = done + todo;
   const percent = total > 0 ? (done / total) * 100 : 0;
 
-  // Estimation en heures : <!-- estimate: 8 --> ou <!-- estimate: 8h -->
-  const estimateMatch = content.match(/<!--\s*estimate\s*:\s*(\d+(?:\.\d+)?)\s*h?\s*-->/i);
-  const estimate = estimateMatch ? parseFloat(estimateMatch[1]) : null;
+  // Estimation en heures : <!-- estimate: 8 --> ou <!-- estimate: 8h --> (plusieurs occurrences sommées)
+  const estimateMatches = [...content.matchAll(/<!--\s*estimate\s*:\s*(\d+(?:\.\d+)?)\s*h?\s*-->/gi)];
+  const estimate = estimateMatches.length > 0
+    ? estimateMatches.reduce((sum, m) => sum + parseFloat(m[1]), 0)
+    : null;
 
   results.push({
     name: h1Title,

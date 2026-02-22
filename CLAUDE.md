@@ -41,4 +41,4 @@ This is a Node.js CLI tool using ESM (`"type": "module"`). The two entry points 
 - Must start with an H1 (`# Title`) — used as the section title in the compiled output and as the module name in the todo report
 - Checkboxes: `- [ ] task` (todo), `- [x] task` (done)
 - Versioned tasks: `- [ ] v2: task` or `- [ ] v2 : task` (space before colon accepted) — excluded from default counts, filterable with `--version v2`
-- Time estimate: `<!-- estimate: 8 -->` or `<!-- estimate: 8h -->` (HTML comment, invisible in rendered markdown) — decimals accepted (e.g. `1.5`). Stories without this tag are excluded from the project time total.
+- Time estimate: `<!-- estimate: 8 -->` or `<!-- estimate: 8h -->` (HTML comment, invisible in rendered markdown) — decimals accepted (e.g. `1.5`). Multiple occurrences in the same file are **summed** (useful for global STORIES.md with one estimate per section). Stories without this tag are excluded from the project time total.
