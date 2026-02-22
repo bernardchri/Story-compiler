@@ -58,8 +58,19 @@ for (const file of stories) {
   const h1Match = content.match(/^#\s+(.+)$/m);
   const title = h1Match ? h1Match[1].trim() : path.basename(path.dirname(file));
 
+  // Réécrire les chemins relatifs des images pour les rendre relatifs à la racine
+  const fileDir = path.dirname(file);
+  const body = content
+    .replace(/^#\s+.+$/m, "")
+    .trimStart()
+    .replace(/!\[([^\]]*)\]\((?!https?:\/\/|file:\/\/|\/|data:)([^)]+)\)/g, (_, alt, imgPath) => {
+      const absImg = path.resolve(fileDir, imgPath);
+      const rootRelative = path.relative(projectRoot, absImg);
+      return `![${alt}](${rootRelative})`;
+    });
+
   compiled += `\n---\n\n## ${title}\n\n`;
-  compiled += content.replace(/^#\s+.+$/m, "").trimStart();
+  compiled += body;
   compiled += "\n\n";
 }
 
