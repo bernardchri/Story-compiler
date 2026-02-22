@@ -76,12 +76,17 @@ for (const file of stories) {
   const total = done + todo;
   const percent = total > 0 ? (done / total) * 100 : 0;
 
+  // Estimation en heures : <!-- estimate: 8 --> ou <!-- estimate: 8h -->
+  const estimateMatch = content.match(/<!--\s*estimate\s*:\s*(\d+(?:\.\d+)?)\s*h?\s*-->/i);
+  const estimate = estimateMatch ? parseFloat(estimateMatch[1]) : null;
+
   results.push({
     name: h1Title,
     filePath: file,
     done,
     total,
     percent,
+    estimate,
   });
 }
 
@@ -92,7 +97,7 @@ results.sort((a, b) => b.percent - a.percent);
 console.log(chalk.bold("\n📋 Progression des stories\n"));
 if (version) console.log(chalk.gray(`Filtrage version : ${version}\n`));
 
-for (const { name, filePath, done, total, percent } of results) {
+for (const { name, filePath, done, total, percent, estimate } of results) {
   const barLength = 20;
   const filled = Math.round((percent / 100) * barLength);
   const bar =
@@ -110,10 +115,17 @@ for (const { name, filePath, done, total, percent } of results) {
   const fileUrl = `file://${absolutePath}`;
   const link = `\x1b]8;;${fileUrl}\x07${chalk.gray(filePath)}\x1b]8;;\x07`;
 
+  let estimateStr = "";
+  if (estimate !== null) {
+    const remaining = estimate * (1 - percent / 100);
+    const remainingStr = remaining % 1 === 0 ? remaining.toFixed(0) : remaining.toFixed(1);
+    estimateStr = chalk.gray(`  ~${remainingStr}h restantes`);
+  }
+
   console.log(
     `${chalk.bold(name.padEnd(30))} ${bar} ${color(
       `${Math.round(percent)}%`
-    )}  (${done}/${total})`
+    )}  (${done}/${total})${estimateStr}`
   );
   console.log(`  ${link}\n`);
 }
@@ -128,5 +140,32 @@ console.log("\n🌍 " + chalk.bold("Progression globale :"));
 console.log(
   `   ${chalk.green(`${doneTodos} done`)} / ${chalk.gray(
     `${totalTodos} total`
-  )}  → ${chalk.bold.cyan(`${globalPercent}%`)}\n`
+  )}  → ${chalk.bold.cyan(`${globalPercent}%`)}`
 );
+
+// Résumé des estimations
+const withEstimate = results.filter((r) => r.estimate !== null);
+if (withEstimate.length > 0) {
+  const totalEstimate = withEstimate.reduce((a, b) => a + b.estimate, 0);
+  const totalRemaining = withEstimate.reduce(
+    (a, b) => a + b.estimate * (1 - b.percent / 100),
+    0
+  );
+  const totalRemainingStr =
+    totalRemaining % 1 === 0
+      ? totalRemaining.toFixed(0)
+      : totalRemaining.toFixed(1);
+  const totalEstimateStr =
+    totalEstimate % 1 === 0 ? totalEstimate.toFixed(0) : totalEstimate.toFixed(1);
+
+  const missingCount = results.length - withEstimate.length;
+  const missingNote =
+    missingCount > 0 ? chalk.gray(` (${missingCount} story sans estimation)`) : "";
+
+  console.log(
+    `\n⏱️  ${chalk.bold("Estimation projet :")} ${chalk.white(totalEstimateStr + "h")} total` +
+    `  →  ${chalk.yellow("~" + totalRemainingStr + "h restantes")}` +
+    missingNote
+  );
+}
+console.log();

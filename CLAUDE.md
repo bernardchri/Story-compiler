@@ -31,12 +31,14 @@ This is a Node.js CLI tool using ESM (`"type": "module"`). The two entry points 
 
 1. Discovers `src/**/STORIES.md` and root `STORIES.md`
 2. Parses `- [ ]` (todo) and `- [x]` (done) checkboxes
-3. Version-prefixed items (e.g. `- [ ] v2: task`) are **excluded** from the default count and only included when `--version v2` is passed
+3. Version-prefixed items (e.g. `- [ ] v2: task` or `- [ ] v2 : task`) are **excluded** from the default count and only included when `--version v2` is passed
 4. Displays a colored progress bar per story file, sorted by completion %, plus a global summary
 5. Also warns about `src/*/` subdirectories that have no `STORIES.md`
+6. Reads optional time estimates per story (`<!-- estimate: N -->`) and shows remaining hours per story and a project-wide total
 
 ### STORIES.md conventions
 
 - Must start with an H1 (`# Title`) — used as the section title in the compiled output and as the module name in the todo report
 - Checkboxes: `- [ ] task` (todo), `- [x] task` (done)
-- Versioned tasks: `- [ ] v2: task` — excluded from default counts, filterable with `--version v2`
+- Versioned tasks: `- [ ] v2: task` or `- [ ] v2 : task` (space before colon accepted) — excluded from default counts, filterable with `--version v2`
+- Time estimate: `<!-- estimate: 8 -->` or `<!-- estimate: 8h -->` (HTML comment, invisible in rendered markdown) — decimals accepted (e.g. `1.5`). Stories without this tag are excluded from the project time total.
